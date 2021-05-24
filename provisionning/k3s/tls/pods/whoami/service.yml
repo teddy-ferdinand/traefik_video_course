@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: whoami
+  namespace: default
+spec:
+  ports:
+  - port: 80
+    name: http
+    protocol: TCP
+  selector:
+    app: whoami

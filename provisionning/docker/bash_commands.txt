@@ -1,0 +1,12 @@
+docker run -d -p 8000:80 -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock traefik:2.4 --api.insecure --providers.docker
+docker run -d traefik/whoami
+docker run -d -l traefik.http.routers.whoami.rule='Host(`demo1.tferdinand.net`)' traefik/whoami:latest
+
+
+
+------------
+
+systemctl restart docker
+docker run -d -p 8000:80 -p 8080:8080 -p 8443:443 -v /var/run/docker.sock:/var/run/docker.sock traefik:2.4 --api.insecure --providers.docker --certificatesresolvers.le.acme.email=demo@myawesomemail.com --certificatesresolvers.le.acme.httpchallenge.entrypoint=web --entryPoints.web.address=:80 --entryPoints.websecure.address=:443
+docker run -d -l traefik.http.routers.whoami.rule='Host(`demo1.tferdinand.net`)' -l traefik.http.routers.whoami.tls="true" -l traefik.http.routers.whoami.tls.certresolver="le" traefik/whoami:latest
+docker run -d -l traefik.http.routers.ghost.rule='Host(`demo2.tferdinand.net`)' -l traefik.http.routers.ghost.tls="true" -l traefik.http.routers.ghost.tls.certresolver="le" ghost:latest

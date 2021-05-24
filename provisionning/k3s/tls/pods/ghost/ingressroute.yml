@@ -1,0 +1,38 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ghost-tls
+  namespace: default
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - kind: Rule
+    match: Host(`demo2.tferdinand.net`) && PathPrefix(`/`)
+    services:
+    - name: ghost
+      port: 2368
+    middlewares:
+      - name: securityheaders
+  tls:
+    certResolver: le
+    options:
+      name: tlsoptions
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ghost
+  namespace: default
+spec:
+  entryPoints:
+    - web
+  routes:
+  - kind: Rule
+    match: Host(`demo2.tferdinand.net`) && PathPrefix(`/`)
+    services:
+    - name: ghost
+      port: 2368
+    middlewares:
+      - name: securityheaders
+      - name: redirecthttps

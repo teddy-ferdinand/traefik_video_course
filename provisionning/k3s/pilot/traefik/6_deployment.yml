@@ -1,0 +1,41 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: traefik
+  namespace: traefik
+  labels:
+    k8s-app: traefik
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: traefik
+  template:
+    metadata:
+      labels:
+        k8s-app: traefik
+        name: traefik
+    spec:
+      hostNetwork: true
+      serviceAccountName: traefik
+      terminationGracePeriodSeconds: 60
+      containers:
+      - image: traefik:2.4.8
+        name: traefik
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        - name: traefik
+          containerPort: 8080
+        args:
+        - --providers.kubernetescrd
+        - --entrypoints.web.address=:80
+        - --entrypoints.websecure.address=:443
+        - --certificatesresolvers.le.acme.email=demo@myawesomemail.com
+        - --certificatesResolvers.le.acme.httpChallenge.entryPoint=web
+        - --api.insecure
+        - --pilot.token=33f7a2f2-5870-42b9-ab1c-4442c7191dbb
+        - --experimental.plugins.demo.moduleName=github.com/traefik/plugindemo
+        - --experimental.plugins.demo.version=v0.5.0

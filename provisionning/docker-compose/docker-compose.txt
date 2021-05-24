@@ -1,0 +1,23 @@
+version: "3.3"
+
+services:
+  webserver:
+    image: traefik:2.4
+    ports:
+     - "8000:80"
+     - "8443:443"
+     - "8080:8080"
+    restart: "always"
+    command: "--entryPoints.websecure.address=:443 --providers.docker --api.insecure --certificatesresolvers.le.acme.email=demo@myawesomemail.com --certificatesresolvers.le.acme.httpchallenge.entrypoint=web --entryPoints.web.address=:80 --entryPoints.websecure.address=:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  whoami:
+    image: traefik/whoami:latest
+    ports:
+      - 80
+    restart: "always"
+    labels:
+      - traefik.http.routers.whoami.rule=Host(`demo1.tferdinand.net`)
+      - traefik.http.routers.whoami.tls=true
+      - traefik.http.routers.whoami.tls.certresolver=le
