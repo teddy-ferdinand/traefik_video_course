@@ -1,0 +1,1 @@
+{"dependencies":[["putty-key",["~> 1.0"]],["vagrant-multi-putty",["= 1.6.0"]]],"checksum":"d019a4d09dd5d9c8b84b0835d3230db9141bebfd5bee1317e7a5dea514af21a0","vagrant_version":"2.2.15"}
